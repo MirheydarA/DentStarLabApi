@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build DentStarLab.Api",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/DentStarLab.Api/DentStarLab.Api.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

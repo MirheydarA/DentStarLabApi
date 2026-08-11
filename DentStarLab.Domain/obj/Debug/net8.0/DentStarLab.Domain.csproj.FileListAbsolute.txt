@@ -1,0 +1,11 @@
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\bin\Debug\net8.0\DentStarLab.Domain.deps.json
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\bin\Debug\net8.0\DentStarLab.Domain.dll
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\bin\Debug\net8.0\DentStarLab.Domain.pdb
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.AssemblyInfoInputs.cache
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.AssemblyInfo.cs
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.csproj.CoreCompileInputs.cache
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.dll
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\refint\DentStarLab.Domain.dll
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.pdb
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\ref\DentStarLab.Domain.dll

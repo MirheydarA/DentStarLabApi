@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "DentStarLab.Api",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/DentStarLab.Api/bin/Debug/net8.0/DentStarLab.Api.dll",
+            "cwd": "${workspaceFolder}/DentStarLab.Api",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ]
+}
