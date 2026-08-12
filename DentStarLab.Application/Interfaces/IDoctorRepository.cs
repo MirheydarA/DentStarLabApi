@@ -1,4 +1,7 @@
+using DentStarLab.Domain.Entities;
+
 namespace DentStarLab.Application.Interfaces;
+
 public interface IDoctorRepository
 {
     Task AddAsync(Doctor doctor);

@@ -18,7 +18,8 @@ public static class DependencyInjection
                 configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IWorkTypeRepository, WorkTypeRepository>();
-
+        services.AddScoped<IDoctorRepository, DoctorRepository>();
+        
         return services;
     }
 }

@@ -9,6 +9,7 @@ builder.Services.AddInfrastructure(
 
 // Application Services
 builder.Services.AddScoped<WorkTypeService>();
+builder.Services.AddScoped<DoctorService>();
 
 // Controllers
 builder.Services.AddControllers();
