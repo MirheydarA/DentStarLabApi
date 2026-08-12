@@ -9,3 +9,4 @@ C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\Dent
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\refint\DentStarLab.Domain.dll
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.pdb
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\ref\DentStarLab.Domain.dll
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Domain\obj\Debug\net8.0\DentStarLab.Domain.sourcelink.json

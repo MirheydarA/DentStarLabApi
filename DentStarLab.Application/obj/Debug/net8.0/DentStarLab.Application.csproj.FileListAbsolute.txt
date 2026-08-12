@@ -13,3 +13,4 @@ C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Application\obj\Debug\net8.0
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Application\obj\Debug\net8.0\refint\DentStarLab.Application.dll
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Application\obj\Debug\net8.0\DentStarLab.Application.pdb
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Application\obj\Debug\net8.0\ref\DentStarLab.Application.dll
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Application\obj\Debug\net8.0\DentStarLab.Application.sourcelink.json

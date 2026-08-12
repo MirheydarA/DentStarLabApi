@@ -17,3 +17,4 @@ C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Infrastructure\obj\Debug\net
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Infrastructure\obj\Debug\net8.0\ref\DentStarLab.Infrastructure.dll
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Infrastructure\bin\Debug\net8.0\DentStarLab.Infrastructure.runtimeconfig.json
 C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Infrastructure\obj\Debug\net8.0\DentStarLab.Infrastructure.genruntimeconfig.cache
+C:\Users\BAKU\OneDrive\Desktop\DentStar\DentStarLab.Infrastructure\obj\Debug\net8.0\DentStarLab.Infrastructure.sourcelink.json
