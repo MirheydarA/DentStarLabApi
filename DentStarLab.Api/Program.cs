@@ -10,11 +10,12 @@ builder.Services.AddInfrastructure(
 // Application Services
 builder.Services.AddScoped<WorkTypeService>();
 builder.Services.AddScoped<DoctorService>();
+builder.Services.AddScoped<WorkService>();
 
 // Controllers
 builder.Services.AddControllers();
 
-// Swagger
+// Swaggert
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

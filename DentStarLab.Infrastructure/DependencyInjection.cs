@@ -1,4 +1,5 @@
 using DentStarLab.Application.Interfaces;
+using DentStarLab.Domain.Entities;
 using DentStarLab.Infrastructure.Persistence;
 using DentStarLab.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ public static class DependencyInjection
 
         services.AddScoped<IWorkTypeRepository, WorkTypeRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
+        services.AddScoped<IWorkRepository, WorkRepository>();
         
         return services;
     }
