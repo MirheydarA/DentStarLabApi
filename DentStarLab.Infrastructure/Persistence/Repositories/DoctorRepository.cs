@@ -21,13 +21,12 @@ public class DoctorRepository : IDoctorRepository
 
     public async Task<List<Doctor>> GetAllAsync()
     {
-        return await _context.Doctors.ToListAsync();
+        return await _context.Doctors.Where( x => x.IsActive).ToListAsync();
     }
 
     public async Task<Doctor?> GetByIdAsync(int id)
     {
-        return await _context.Doctors
-            .FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Doctors.Where( x => x.IsActive).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task SaveChangesAsync()

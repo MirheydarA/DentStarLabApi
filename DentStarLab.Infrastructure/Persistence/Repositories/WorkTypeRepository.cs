@@ -15,14 +15,13 @@ public class WorkTypeRepository : IWorkTypeRepository
 
     public async Task<WorkType?> GetByIdAsync(int id)
     {
-        return await _context.WorkTypes
+        return await _context.WorkTypes.Where( x => x.IsActive)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<List<WorkType>> GetAllAsync()
     {
-        return await _context.WorkTypes
-            .ToListAsync();
+        return await _context.WorkTypes.Where( x => x.IsActive).ToListAsync();
     }
 
     public async Task<List<WorkType>> GetActiveAsync()
