@@ -1,11 +1,13 @@
 using DentStarLab.Application.DTOs.Works;
 using DentStarLab.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DentStarLab.Api.Controllers;
 
 [ApiController]
 [Route("api/works")]
+[Authorize(Roles = "Admin,Technician")]
 public class WorksController : ControllerBase
 {
     private readonly WorkService _service;
@@ -15,14 +17,29 @@ public class WorksController : ControllerBase
         _service = service;
     }
 
+
+    // =====================================================
+    // CREATE WORK
+    // Admin + Technician
+    // =====================================================
+
     [HttpPost]
     public async Task<IActionResult> Create(
-        WorkCreateDto dto)
+        [FromBody] WorkCreateDto dto)
     {
         var result = await _service.CreateAsync(dto);
 
-        return Ok(result);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = result.Id },
+            result);
     }
+
+
+    // =====================================================
+    // GET ALL WORKS
+    // Admin + Technician
+    // =====================================================
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -32,37 +49,73 @@ public class WorksController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
+
+    // =====================================================
+    // GET WORK BY ID
+    // Admin + Technician
+    // =====================================================
+
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetByIdAsync(id);
 
         if (result == null)
-            return NotFound();
+        {
+            return NotFound(new
+            {
+                message = "Work not found."
+            });
+        }
 
         return Ok(result);
     }
 
-    [HttpPut("{id}")]
+
+    // =====================================================
+    // UPDATE WORK
+    // Admin only
+    // =====================================================
+
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(
         int id,
-        WorkUpdateDto dto)
+        [FromBody] WorkUpdateDto dto)
     {
-        var result = await _service.UpdateAsync(id, dto);
+        var result = await _service.UpdateAsync(
+            id,
+            dto);
 
         if (!result)
-            return NotFound();
+        {
+            return NotFound(new
+            {
+                message = "Work not found."
+            });
+        }
 
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+
+    // =====================================================
+    // DELETE WORK
+    // Admin + Technician
+    // =====================================================
+
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _service.DeleteAsync(id);
 
         if (!result)
-            return NotFound();
+        {
+            return NotFound(new
+            {
+                message = "Work not found."
+            });
+        }
 
         return NoContent();
     }

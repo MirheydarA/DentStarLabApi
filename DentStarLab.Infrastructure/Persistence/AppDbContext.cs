@@ -13,6 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Work> Works => Set<Work>();
     public DbSet<WorkItem> WorkItems => Set<WorkItem>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<User> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

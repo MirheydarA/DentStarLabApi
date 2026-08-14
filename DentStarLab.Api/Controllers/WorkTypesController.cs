@@ -1,11 +1,13 @@
 using DentStarLab.Application.DTOs.WorkTypes;
 using DentStarLab.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DentStarLab.Api.Controllers;
 
 [ApiController]
 [Route("api/work-types")]
+[Authorize(Roles = "Admin,Technician")]
 public class WorkTypesController : ControllerBase
 {
     private readonly WorkTypeService _service;
@@ -15,7 +17,14 @@ public class WorkTypesController : ControllerBase
         _service = service;
     }
 
+
+    // =====================================================
+    // CREATE WORK TYPE
+    // Admin only
+    // =====================================================
+
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(
         [FromBody] WorkTypeCreateDto dto)
     {
@@ -27,6 +36,12 @@ public class WorkTypesController : ControllerBase
             result);
     }
 
+
+    // =====================================================
+    // GET ALL WORK TYPES
+    // Admin + Technician
+    // =====================================================
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -35,37 +50,51 @@ public class WorkTypesController : ControllerBase
         return Ok(result);
     }
 
+
+    // =====================================================
+    // GET WORK TYPE BY ID
+    // Admin + Technician
+    // =====================================================
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetByIdAsync(id);
 
         if (result == null)
-            return NotFound();
+        {
+            return NotFound(new
+            {
+                message = "Work type not found."
+            });
+        }
 
         return Ok(result);
     }
 
+
+    // =====================================================
+    // UPDATE WORK TYPE
+    // Admin only
+    // =====================================================
+
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(
         int id,
         [FromBody] WorkTypeUpdateDto dto)
     {
-        var result = await _service.UpdateAsync(id, dto);
+        var result = await _service.UpdateAsync(
+            id,
+            dto);
 
         if (!result)
-            return NotFound();
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var result = await _service.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
+        {
+            return NotFound(new
+            {
+                message = "Work type not found."
+            });
+        }
 
         return NoContent();
     }

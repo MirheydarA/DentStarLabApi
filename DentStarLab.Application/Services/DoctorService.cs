@@ -36,9 +36,7 @@ public class DoctorService
     {
         var doctors = await _repository.GetAllAsync();
 
-        return doctors
-            .Select(MapToDto)
-            .ToList();
+        return doctors.Select(MapToDto).ToList();
     }
 
     public async Task<DoctorDto?> GetByIdAsync(int id)
@@ -51,9 +49,7 @@ public class DoctorService
         return MapToDto(doctor);
     }
 
-    public async Task<bool> UpdateAsync(
-        int id,
-        DoctorUpdateDto dto)
+    public async Task<bool> UpdateAsync(int id, DoctorUpdateDto dto)
     {
         var doctor = await _repository.GetByIdAsync(id);
 

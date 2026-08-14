@@ -1,11 +1,13 @@
 using DentStarLab.Application.DTOs.Doctors;
 using DentStarLab.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DentStarLab.Api.Controllers;
 
 [ApiController]
 [Route("api/doctors")]
+[Authorize(Roles = "Admin,Technician")]
 public class DoctorsController : ControllerBase
 {
     private readonly DoctorService _service;
@@ -14,6 +16,11 @@ public class DoctorsController : ControllerBase
     {
         _service = service;
     }
+
+    // =====================================================
+    // CREATE DOCTOR
+    // Admin + Technician
+    // =====================================================
 
     [HttpPost]
     public async Task<IActionResult> Create(
@@ -27,6 +34,12 @@ public class DoctorsController : ControllerBase
             result);
     }
 
+
+    // =====================================================
+    // GET ALL ACTIVE DOCTORS
+    // Admin + Technician
+    // =====================================================
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -35,29 +48,54 @@ public class DoctorsController : ControllerBase
         return Ok(result);
     }
 
+
+    // =====================================================
+    // GET DOCTOR BY ID
+    // Admin + Technician
+    // =====================================================
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetByIdAsync(id);
 
         if (result == null)
-            return NotFound();
+            return NotFound(new
+            {
+                message = "Doctor not found."
+            });
 
         return Ok(result);
     }
+
+
+    // =====================================================
+    // UPDATE DOCTOR
+    // Admin + Technician
+    // =====================================================
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
         [FromBody] DoctorUpdateDto dto)
     {
-        var result = await _service.UpdateAsync(id, dto);
+        var result = await _service.UpdateAsync(
+            id,
+            dto);
 
         if (!result)
-            return NotFound();
+            return NotFound(new
+            {
+                message = "Doctor not found."
+            });
 
         return NoContent();
     }
+
+
+    // =====================================================
+    // DELETE / SOFT DELETE DOCTOR
+    // =====================================================
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
@@ -65,7 +103,10 @@ public class DoctorsController : ControllerBase
         var result = await _service.DeleteAsync(id);
 
         if (!result)
-            return NotFound();
+            return NotFound(new
+            {
+                message = "Doctor not found."
+            });
 
         return NoContent();
     }
