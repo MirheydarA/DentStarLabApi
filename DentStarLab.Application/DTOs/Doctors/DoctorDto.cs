@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace DentStarLab.Application.DTOs.Doctors;
 public class DoctorDto
 {
@@ -13,4 +8,5 @@ public class DoctorDto
     public string? Email { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
+    public Guid AccessToken { get; set; }
 }

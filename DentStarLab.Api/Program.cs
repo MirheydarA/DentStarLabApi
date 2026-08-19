@@ -40,6 +40,9 @@ builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<PaymentService>();
+builder.Services.AddScoped<DoctorPortalService>();
 
 
 // =====================================================
@@ -94,7 +97,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
             .WithOrigins(
-                "http://localhost:5174"
+                "http://localhost:5173"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();

@@ -10,6 +10,7 @@ public class Payment
     public int DoctorId { get; set; }
     public decimal Amount { get; set; }
     public DateTime PaymentDate { get; set; }
+    public string? Note { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public Doctor Doctor { get; set; } = null!;
 }

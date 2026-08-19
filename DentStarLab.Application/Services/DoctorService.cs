@@ -91,7 +91,17 @@ public class DoctorService
             Phone = doctor.Phone,
             Email = doctor.Email,
             IsActive = doctor.IsActive,
-            CreatedAt = doctor.CreatedAt
+            CreatedAt = doctor.CreatedAt,
+            AccessToken = doctor.AccessToken
         };
+    }
+    public async Task<List<DoctorBalanceDto>> GetBalancesAsync()
+    {
+        return await _repository.GetBalancesAsync();
+    }
+
+    public async Task<DoctorBalanceDto?> GetBalanceByIdAsync(int doctorId)
+    {
+        return await _repository.GetBalanceByIdAsync(doctorId);
     }
 }

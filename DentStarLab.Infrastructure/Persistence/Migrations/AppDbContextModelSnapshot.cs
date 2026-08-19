@@ -30,6 +30,9 @@ namespace DentStarLab.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid>("AccessToken")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -56,6 +59,9 @@ namespace DentStarLab.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccessToken")
+                        .IsUnique();
+
                     b.ToTable("Doctors");
                 });
 
@@ -68,7 +74,6 @@ namespace DentStarLab.Infrastructure.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -77,12 +82,18 @@ namespace DentStarLab.Infrastructure.Persistence.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("PaymentDate");
 
                     b.ToTable("Payments");
                 });
@@ -175,6 +186,10 @@ namespace DentStarLab.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("WorkDate");
+
+                    b.HasIndex("DoctorId", "WorkDate");
 
                     b.ToTable("Works");
                 });

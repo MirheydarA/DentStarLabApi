@@ -11,4 +11,5 @@ public class Doctor
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public ICollection<Work> Works { get; set; } = new List<Work>();
     public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public Guid AccessToken { get; set; } = Guid.NewGuid();
 }

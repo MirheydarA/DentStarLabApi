@@ -110,4 +110,25 @@ public class DoctorsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("balances")]
+    public async Task<IActionResult> GetBalances()
+    {
+        var result = await _service.GetBalancesAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}/balance")]
+    public async Task<IActionResult> GetBalance(int id)
+    {
+        var result = await _service.GetBalanceByIdAsync(id);
+
+        if (result == null)
+        {
+            return NotFound(new { message = "Doctor not found." });
+        }
+
+        return Ok(result);
+    }
 }

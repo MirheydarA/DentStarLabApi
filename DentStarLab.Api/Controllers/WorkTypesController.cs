@@ -84,9 +84,7 @@ public class WorkTypesController : ControllerBase
         int id,
         [FromBody] WorkTypeUpdateDto dto)
     {
-        var result = await _service.UpdateAsync(
-            id,
-            dto);
+        var result = await _service.UpdateAsync( id, dto);
 
         if (!result)
         {

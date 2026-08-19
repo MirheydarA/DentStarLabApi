@@ -28,5 +28,11 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();
+            
+        builder.Property(x => x.AccessToken)
+            .IsRequired();
+
+        builder.HasIndex(x => x.AccessToken)
+            .IsUnique();
     }
 }

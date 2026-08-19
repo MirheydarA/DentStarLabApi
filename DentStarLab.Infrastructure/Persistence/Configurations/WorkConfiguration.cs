@@ -23,5 +23,19 @@ public class WorkConfiguration : IEntityTypeConfiguration<Work>
             .WithMany(x => x.Works)
             .HasForeignKey(x => x.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // =====================================================
+        // Performans indeksləri
+        //
+        // Works cədvəlində minlərlə sətir olacağı üçün
+        // filter/pagination sorğularını sürətləndirmək üçün.
+        // =====================================================
+
+        builder.HasIndex(x => x.WorkDate);
+
+        builder.HasIndex(x => x.DoctorId);
+
+        // Həkimə görə + son aya görə filter ssenarisi üçün
+        builder.HasIndex(x => new { x.DoctorId, x.WorkDate });
     }
 }

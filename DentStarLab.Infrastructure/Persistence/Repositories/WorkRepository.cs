@@ -1,3 +1,6 @@
+using DentStarLab.Application.DTOs.Dashboard;
+using DentStarLab.Application.DTOs.DoctorPortal;
+using DentStarLab.Application.DTOs.Works;
 using DentStarLab.Application.Interfaces;
 using DentStarLab.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -21,18 +24,65 @@ public class WorkRepository : IWorkRepository
     public async Task<List<Work>> GetAllAsync()
     {
         return await _context.Works
+            .Include(x => x.Doctor)
             .Include(x => x.Items)
                 .ThenInclude(x => x.WorkType)
-            .Include(x => x.Doctor)
             .ToListAsync();
+    }
+
+    public async Task<(List<Work> Items, int TotalCount)> GetPagedAsync(
+        WorkQueryDto query)
+    {
+        var worksQuery = _context.Works
+            .Include(x => x.Doctor)
+            .Include(x => x.Items)
+                .ThenInclude(x => x.WorkType)
+            .AsQueryable();
+
+        if (query.DoctorId.HasValue && query.DoctorId > 0)
+        {
+            worksQuery = worksQuery.Where(w => w.DoctorId == query.DoctorId);
+        }
+
+        if (query.DateFrom.HasValue)
+        {
+            worksQuery = worksQuery.Where(w => w.WorkDate >= query.DateFrom.Value);
+        }
+
+        if (query.DateTo.HasValue)
+        {
+            worksQuery = worksQuery.Where(w => w.WorkDate <= query.DateTo.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Search))
+        {
+            var search = query.Search.Trim().ToLower();
+
+            worksQuery = worksQuery.Where(w =>
+                w.PatientName.ToLower().Contains(search));
+        }
+
+        worksQuery = worksQuery.OrderByDescending(w => w.WorkDate);
+
+        var totalCount = await worksQuery.CountAsync();
+
+        var page = query.Page <= 0 ? 1 : query.Page;
+        var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
+
+        var items = await worksQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
     }
 
     public async Task<Work?> GetByIdAsync(int id)
     {
         return await _context.Works
+            .Include(x => x.Doctor)
             .Include(x => x.Items)
                 .ThenInclude(x => x.WorkType)
-            .Include(x => x.Doctor)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -53,5 +103,225 @@ public class WorkRepository : IWorkRepository
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
+    }
+
+    // =====================================================
+    // DASHBOARD STATS
+    // =====================================================
+
+    public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+    {
+        var today = DateTime.UtcNow.Date;
+
+        var startOfMonth = new DateTime(today.Year, today.Month, 1);
+        var startOfNextMonth = startOfMonth.AddMonths(1);
+
+        var startOfYear = new DateTime(today.Year, 1, 1);
+        var startOfNextYear = startOfYear.AddYears(1);
+
+        // Trend üçün son 12 ayın başlanğıcı (bu ay daxil)
+        var startOfTrend = startOfMonth.AddMonths(-11);
+
+        // =================================================
+        // Bu ay
+        // =================================================
+
+        var worksThisMonth = await _context.Works
+            .Include(w => w.Doctor)
+            .Include(w => w.Items)
+            .Where(w => w.WorkDate >= startOfMonth && w.WorkDate < startOfNextMonth)
+            .ToListAsync();
+
+        var totalRevenueThisMonth = worksThisMonth
+            .SelectMany(w => w.Items)
+            .Sum(i => i.TotalAmount);
+
+        var doctorRevenueThisMonth = worksThisMonth
+            .GroupBy(w => new
+            {
+                w.DoctorId,
+                DoctorName = $"{w.Doctor.Name} {w.Doctor.Surname}"
+            })
+            .Select(g => new DoctorRevenueDto
+            {
+                DoctorId = g.Key.DoctorId,
+                DoctorName = g.Key.DoctorName,
+                WorkCount = g.Count(),
+                TotalRevenue = g.SelectMany(w => w.Items).Sum(i => i.TotalAmount)
+            })
+            .OrderByDescending(d => d.TotalRevenue)
+            .ToList();
+
+        // =================================================
+        // Bu il
+        // =================================================
+
+        var worksThisYear = await _context.Works
+            .Include(w => w.Items)
+            .Where(w => w.WorkDate >= startOfYear && w.WorkDate < startOfNextYear)
+            .ToListAsync();
+
+        var totalRevenueThisYear = worksThisYear
+            .SelectMany(w => w.Items)
+            .Sum(i => i.TotalAmount);
+
+        // =================================================
+        // Son 12 ay trend
+        // =================================================
+
+        var worksForTrend = await _context.Works
+            .Include(w => w.Items)
+            .Where(w => w.WorkDate >= startOfTrend && w.WorkDate < startOfNextMonth)
+            .ToListAsync();
+
+        var monthlyRevenueTrend = new List<MonthlyRevenueDto>();
+
+        for (var i = 0; i < 12; i++)
+        {
+            var monthStart = startOfTrend.AddMonths(i);
+            var monthEnd = monthStart.AddMonths(1);
+
+            var worksInMonth = worksForTrend
+                .Where(w => w.WorkDate >= monthStart && w.WorkDate < monthEnd)
+                .ToList();
+
+            monthlyRevenueTrend.Add(new MonthlyRevenueDto
+            {
+                Year = monthStart.Year,
+                Month = monthStart.Month,
+                WorkCount = worksInMonth.Count,
+                TotalRevenue = worksInMonth
+                    .SelectMany(w => w.Items)
+                    .Sum(i => i.TotalAmount)
+            });
+        }
+
+        return new DashboardStatsDto
+        {
+            TotalRevenueThisMonth = totalRevenueThisMonth,
+            TotalWorksThisMonth = worksThisMonth.Count,
+
+            TotalRevenueThisYear = totalRevenueThisYear,
+            TotalWorksThisYear = worksThisYear.Count,
+
+            DoctorRevenueThisMonth = doctorRevenueThisMonth,
+            MonthlyRevenueTrend = monthlyRevenueTrend
+        };
+    }
+    public async Task<List<Work>> GetByDoctorIdAsync(int doctorId)
+    {
+        return await _context.Works
+            .Include(x => x.Items)
+            .ThenInclude(x => x.WorkType)
+            .Where(x => x.DoctorId == doctorId)
+            .OrderByDescending(x => x.WorkDate)
+            .ToListAsync();
+    }
+
+    public async Task<(List<Work> Items, int TotalCount)> GetDoctorPortalWorksAsync(int doctorId, DoctorPortalWorkFilterDto filter)
+    {
+        var query = _context.Works
+            .AsNoTracking()
+            .Where(x => x.DoctorId == doctorId)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.WorkType)
+            .AsQueryable();
+
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var search = filter.Search.Trim();
+
+            query = query.Where(x =>
+                x.PatientName.Contains(search));
+        }
+
+        // =========================================================
+        // FROM DATE
+        // =========================================================
+
+        if (filter.FromDate.HasValue)
+        {
+            query = query.Where(x =>
+                x.WorkDate >= filter.FromDate.Value);
+        }
+
+        // =========================================================
+        // TO DATE
+        // =========================================================
+
+        if (filter.ToDate.HasValue)
+        {
+            var toDateExclusive =
+                filter.ToDate.Value.Date.AddDays(1);
+
+            query = query.Where(x =>
+                x.WorkDate < toDateExclusive);
+        }
+
+        // =========================================================
+        // WORK TYPE
+        // =========================================================
+
+        if (filter.WorkTypeId.HasValue)
+        {
+            query = query.Where(x =>
+                x.Items.Any(item =>
+                    item.WorkTypeId == filter.WorkTypeId.Value));
+        }
+
+        // =========================================================
+        // TOTAL COUNT
+        // =========================================================
+
+        var totalCount = await query.CountAsync();
+
+        // =========================================================
+        // PAGINATION
+        // =========================================================
+
+        var page = filter.Page < 1
+            ? 1
+            : filter.Page;
+
+        var pageSize = filter.PageSize <= 0
+            ? 10
+            : Math.Min(filter.PageSize, 50);
+
+        var items = await query
+            .OrderByDescending(x => x.WorkDate)
+            .ThenByDescending(x => x.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (
+            items,
+            totalCount
+        );
+    }
+    public async Task<decimal> GetDoctorTotalWorkAmountAsync(
+    int doctorId)
+    {
+        return await _context.WorkItems
+            .Where(x =>
+                x.Work.DoctorId == doctorId)
+            .SumAsync(x => x.TotalAmount);
+    }
+
+    public async Task<decimal> GetDoctorCurrentMonthWorkAmountAsync(
+    int doctorId,
+    DateTime fromDate,
+    DateTime toDate)
+    {
+        return await _context.WorkItems
+            .Where(x =>
+                x.Work.DoctorId == doctorId &&
+                x.Work.WorkDate >= fromDate &&
+                x.Work.WorkDate < toDate)
+            .SumAsync(x => x.TotalAmount);
     }
 }

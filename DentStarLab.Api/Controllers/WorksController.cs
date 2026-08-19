@@ -7,7 +7,7 @@ namespace DentStarLab.Api.Controllers;
 
 [ApiController]
 [Route("api/works")]
-[Authorize(Roles = "Admin,Technician")]
+// [Authorize(Roles = "Admin,Technician")] TODO:
 public class WorksController : ControllerBase
 {
     private readonly WorkService _service;
@@ -42,9 +42,9 @@ public class WorksController : ControllerBase
     // =====================================================
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] WorkQueryDto query)
     {
-        var result = await _service.GetAllAsync();
+        var result = await _service.GetPagedAsync(query);
 
         return Ok(result);
     }
