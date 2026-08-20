@@ -24,22 +24,17 @@ public class DoctorPortalController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{accessToken:guid}/summary")]
-    public async Task<IActionResult> GetSummary(
-        Guid accessToken)
+    public async Task<IActionResult> GetSummary(Guid accessToken)
     {
-        var result =
-            await _doctorPortalService
-                .GetSummaryAsync(accessToken);
+        var result = await _doctorPortalService.GetSummaryAsync(accessToken);
 
         if (result == null)
         {
             return NotFound(new
             {
-                message =
-                    "Hesabat linki etibarsızdır."
+                message = "Hesabat linki etibarsızdır."
             });
         }
-
         return Ok(result);
     }
 
@@ -49,10 +44,7 @@ public class DoctorPortalController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{accessToken:guid}/works")]
-    public async Task<IActionResult> GetWorks(
-        Guid accessToken,
-        [FromQuery]
-        DoctorPortalWorkFilterDto filter)
+    public async Task<IActionResult> GetWorks(Guid accessToken, [FromQuery] DoctorPortalWorkFilterDto filter)
     {
         var result =
             await _doctorPortalService
@@ -78,16 +70,42 @@ public class DoctorPortalController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{accessToken:guid}/payments")]
-    public async Task<IActionResult> GetPayments(
-        Guid accessToken,
-        [FromQuery]
-        DoctorPortalPaymentFilterDto filter)
+    public async Task<IActionResult> GetPayments(Guid accessToken, [FromQuery] DoctorPortalPaymentFilterDto filter)
     {
-        var result =
-            await _doctorPortalService
-                .GetPaymentsAsync(
-                    accessToken,
-                    filter);
+        DoctorPortalPagedResultDto<DoctorPortalPaymentDto>? result = await _doctorPortalService.GetPaymentsAsync(accessToken, filter);
+
+        if (result == null)
+        {
+            return NotFound(new
+            {
+                message = "Hesabat linki etibarsızdır."
+            });
+        }
+
+        return Ok(result);
+    }
+
+    // =========================================================
+    // WorkTypes
+    // =========================================================
+
+    [AllowAnonymous]
+    [HttpGet("work-types")]
+    public async Task<IActionResult> GetWorkTypes([FromServices] WorkTypeService workTypeService)
+    {
+        var result = await workTypeService.GetAllAsync();
+        return Ok(result);
+    }
+
+    // =========================================================
+    // MONTHLY SUMMARY
+    // =========================================================
+
+    [AllowAnonymous]
+    [HttpGet("{accessToken:guid}/monthly-summary")]
+    public async Task<IActionResult> GetMonthlySummary(Guid accessToken)
+    {
+        List<DoctorPortalMonthlySummaryDto>? result = await _doctorPortalService.GetMonthlySummaryAsync(accessToken);
 
         if (result == null)
         {

@@ -17,15 +17,11 @@ public interface IWorkRepository
 
     Task<DashboardStatsDto> GetDashboardStatsAsync();
     Task<List<Work>> GetByDoctorIdAsync(int doctorId);
-    Task<(
-        List<Work> Items,
-        int TotalCount
-    )> GetDoctorPortalWorksAsync(
-        int doctorId,
-        DoctorPortalWorkFilterDto filter);
+    Task<(List<Work> Items,int TotalCount)> GetDoctorPortalWorksAsync(int doctorId, DoctorPortalWorkFilterDto filter);
 
-    Task<decimal> GetDoctorTotalWorkAmountAsync(
-        int doctorId);
+    Task<decimal> GetDoctorTotalWorkAmountAsync(int doctorId);
 
     Task<decimal> GetDoctorCurrentMonthWorkAmountAsync(int doctorId, DateTime fromDate, DateTime toDate);
+    Task<List<(int Year, int Month, decimal Amount)>> GetDoctorWorkAmountsByMonthAsync(int doctorId);
+    Task<List<int>> GetFrequentDoctorIdsAsync(int days, int top);
 }

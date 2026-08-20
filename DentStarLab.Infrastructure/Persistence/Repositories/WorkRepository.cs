@@ -312,16 +312,51 @@ public class WorkRepository : IWorkRepository
             .SumAsync(x => x.TotalAmount);
     }
 
-    public async Task<decimal> GetDoctorCurrentMonthWorkAmountAsync(
-    int doctorId,
-    DateTime fromDate,
-    DateTime toDate)
+    public async Task<decimal> GetDoctorCurrentMonthWorkAmountAsync(int doctorId, DateTime fromDate, DateTime toDate)
     {
         return await _context.WorkItems
             .Where(x =>
                 x.Work.DoctorId == doctorId &&
                 x.Work.WorkDate >= fromDate &&
                 x.Work.WorkDate < toDate)
-            .SumAsync(x => x.TotalAmount);
+                .SumAsync(x => x.TotalAmount);
+    }
+
+    public async Task<List<(int Year, int Month, decimal Amount)>> GetDoctorWorkAmountsByMonthAsync(int doctorId)
+    {
+        var raw = await _context.WorkItems
+            .Where(x => x.Work.DoctorId == doctorId)
+            .Select(x => new
+            {
+                x.Work.WorkDate,
+                x.TotalAmount
+            }).ToListAsync();
+
+        return raw
+            .GroupBy(x => new { x.WorkDate.Year, x.WorkDate.Month })
+            .Select(g => (
+                Year: g.Key.Year,
+                Month: g.Key.Month,
+                Amount: g.Sum(x => x.TotalAmount)
+            )).ToList();
+    }
+
+    public async Task<List<int>> GetFrequentDoctorIdsAsync(int days, int top)
+    {
+        var cutoff = DateTime.Now.AddDays(-days);
+
+        var result = await _context.Works
+            .Where(w => w.WorkDate >= cutoff)
+            .GroupBy(w => w.DoctorId)
+            .Select(g => new
+            {
+                DoctorId = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Count)
+            .Take(top)
+            .ToListAsync();
+
+        return result.Select(x => x.DoctorId).ToList();
     }
 }

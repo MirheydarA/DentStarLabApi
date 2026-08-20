@@ -26,12 +26,9 @@ public class PaymentRepository : IPaymentRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<(List<Payment> Items, int TotalCount)> GetPagedAsync(
-        PaymentQueryDto query)
+    public async Task<(List<Payment> Items, int TotalCount, decimal TotalAmount)> GetPagedAsync(PaymentQueryDto query)
     {
-        var paymentsQuery = _context.Payments
-            .Include(p => p.Doctor)
-            .AsQueryable();
+        IQueryable<Payment>? paymentsQuery = _context.Payments.Include(p => p.Doctor).AsQueryable();
 
         if (query.DoctorId.HasValue && query.DoctorId > 0)
         {
@@ -48,9 +45,17 @@ public class PaymentRepository : IPaymentRepository
             paymentsQuery = paymentsQuery.Where(p => p.PaymentDate <= query.DateTo.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(query.Search))
+        {
+            var search = query.Search.Trim().ToLower();
+            paymentsQuery = paymentsQuery.Where(p =>
+                p.Note != null && p.Note.ToLower().Contains(search));
+        }
+
         paymentsQuery = paymentsQuery.OrderByDescending(p => p.PaymentDate);
 
         var totalCount = await paymentsQuery.CountAsync();
+        var totalAmount = await paymentsQuery.SumAsync(p => p.Amount);
 
         var page = query.Page <= 0 ? 1 : query.Page;
         var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
@@ -60,9 +65,9 @@ public class PaymentRepository : IPaymentRepository
             .Take(pageSize)
             .ToListAsync();
 
-        return (items, totalCount);
+        return (items, totalCount, totalAmount);
     }
-
+    
     public async Task UpdateAsync(Payment payment)
     {
         _context.Payments.Update(payment);
@@ -157,7 +162,7 @@ public class PaymentRepository : IPaymentRepository
             .Where(x => x.DoctorId == doctorId)
             .SumAsync(x => x.Amount);
     }
-    
+
     public async Task<decimal> GetDoctorCurrentMonthPaymentAmountAsync(int doctorId, DateTime fromDate, DateTime toDate)
     {
         return await _context.Payments
@@ -167,4 +172,25 @@ public class PaymentRepository : IPaymentRepository
                 x.PaymentDate < toDate)
             .SumAsync(x => x.Amount);
     }
+
+    public async Task<List<(int Year, int Month, decimal Amount)>> GetDoctorPaymentAmountsByMonthAsync(int doctorId)
+    {
+        var grouped = await _context.Payments
+            .Where(x => x.DoctorId == doctorId)
+            .GroupBy(x => new
+            {
+                x.PaymentDate.Year,
+                x.PaymentDate.Month
+            })
+            .Select(g => new
+            {
+                g.Key.Year,
+                g.Key.Month,
+                Amount = g.Sum(x => x.Amount)
+            })
+            .ToListAsync();
+
+        return grouped.Select(x => (x.Year, x.Month, x.Amount)).ToList();
+    }
+    
 }

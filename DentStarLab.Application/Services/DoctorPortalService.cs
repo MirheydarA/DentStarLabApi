@@ -1,5 +1,6 @@
 using DentStarLab.Application.DTOs.DoctorPortal;
 using DentStarLab.Application.Interfaces;
+using DentStarLab.Domain.Entities;
 
 namespace DentStarLab.Application.Services;
 
@@ -27,8 +28,7 @@ public class DoctorPortalService
     // SUMMARY
     // =========================================================
 
-    public async Task<DoctorPortalSummaryDto?> GetSummaryAsync(
-        Guid accessToken)
+    public async Task<DoctorPortalSummaryDto?> GetSummaryAsync(Guid accessToken)
     {
         var doctor = await _doctorRepository
             .GetByAccessTokenAsync(accessToken);
@@ -72,23 +72,13 @@ public class DoctorPortalService
 
         return new DoctorPortalSummaryDto
         {
-            DoctorName =
-                $"{doctor.Name} {doctor.Surname}".Trim(),
-
-            CurrentBalance =
-                totalWorkAmount - totalPaymentAmount,
-
-            CurrentMonthWorkAmount =
-                currentMonthWorkAmount,
-
-            CurrentMonthPaymentAmount =
-                currentMonthPaymentAmount,
-
-            CurrentMonthStart =
-                monthStart,
-
-            CurrentMonthEnd =
-                nextMonthStart.AddDays(-1)
+            DoctorName = $"{doctor.Name} {doctor.Surname}".Trim(),
+            CurrentBalance = totalWorkAmount - totalPaymentAmount,
+            CurrentMonthWorkAmount = currentMonthWorkAmount,
+            CurrentMonthPaymentAmount = currentMonthPaymentAmount,
+            CurrentMonthStart = monthStart,
+            CurrentMonthEnd = nextMonthStart.AddDays(-1),
+            CurrentMonthBalance = currentMonthWorkAmount - currentMonthPaymentAmount,
         };
     }
 
@@ -96,11 +86,7 @@ public class DoctorPortalService
     // WORKS
     // =========================================================
 
-    public async Task<
-        DoctorPortalPagedResultDto<DoctorPortalWorkDto>?
-    > GetWorksAsync(
-        Guid accessToken,
-        DoctorPortalWorkFilterDto filter)
+    public async Task<DoctorPortalPagedResultDto<DoctorPortalWorkDto>?> GetWorksAsync(Guid accessToken, DoctorPortalWorkFilterDto filter)
     {
         var doctor = await _doctorRepository
             .GetByAccessTokenAsync(accessToken);
@@ -126,39 +112,19 @@ public class DoctorPortalService
                 .Select(work => new DoctorPortalWorkDto
                 {
                     Id = work.Id,
-
-                    PatientName =
-                        work.PatientName,
-
-                    WorkDate =
-                        work.WorkDate,
-
-                    TotalPrice =
-                        work.Items.Sum(
-                            x => x.TotalAmount),
-
-                    Items = work.Items
-                        .Select(item =>
+                    PatientName =work.PatientName,
+                    WorkDate =work.WorkDate,
+                    TotalPrice =work.Items.Sum(x => x.TotalAmount),
+                    Items = work.Items.Select(item =>
                             new DoctorPortalWorkItemDto
                             {
                                 Id = item.Id,
-
-                                WorkTypeName =
-                                    item.WorkType?.Name
-                                    ?? "Naməlum",
-
-                                Quantity =
-                                    item.ToothCount,
-
-                                UnitPrice =
-                                    item.UnitPrice,
-
-                                TotalPrice =
-                                    item.TotalAmount
-                            })
-                        .ToList()
-                })
-                .ToList()
+                                WorkTypeName =item.WorkType?.Name?? "Naməlum",
+                                Quantity =item.ToothCount,
+                                UnitPrice =item.UnitPrice,
+                                TotalPrice =item.TotalAmount
+                            }).ToList()
+                }).ToList()
         };
     }
 
@@ -166,14 +132,9 @@ public class DoctorPortalService
     // PAYMENTS
     // =========================================================
 
-    public async Task<
-        DoctorPortalPagedResultDto<DoctorPortalPaymentDto>?
-    > GetPaymentsAsync(
-        Guid accessToken,
-        DoctorPortalPaymentFilterDto filter)
+    public async Task<DoctorPortalPagedResultDto<DoctorPortalPaymentDto>?> GetPaymentsAsync(Guid accessToken, DoctorPortalPaymentFilterDto filter)
     {
-        var doctor = await _doctorRepository
-            .GetByAccessTokenAsync(accessToken);
+        var doctor = await _doctorRepository.GetByAccessTokenAsync(accessToken);
 
         if (doctor == null)
             return null;
@@ -187,27 +148,79 @@ public class DoctorPortalService
         return new DoctorPortalPagedResultDto<DoctorPortalPaymentDto>
         {
             Page = filter.Page,
-
             PageSize = filter.PageSize,
-
             TotalCount = result.TotalCount,
-
             Items = result.Items
-                .Select(payment =>
-                    new DoctorPortalPaymentDto
-                    {
-                        Id = payment.Id,
-
-                        Amount =
-                            payment.Amount,
-
-                        PaymentDate =
-                            payment.PaymentDate,
-
-                        Note =
-                            payment.Note
-                    })
-                .ToList()
+                .Select(payment => new DoctorPortalPaymentDto
+                {
+                    Id = payment.Id,
+                    Amount = payment.Amount,
+                    PaymentDate = payment.PaymentDate,
+                    Note = payment.Note
+                }).ToList()
         };
+    }
+    
+    // =========================================================
+    // MONTHLY SUMMARY
+    // =========================================================
+
+    public async Task<List<DoctorPortalMonthlySummaryDto>?> GetMonthlySummaryAsync(Guid accessToken)
+    {
+        Doctor? doctor = await _doctorRepository.GetByAccessTokenAsync(accessToken);
+
+        if (doctor == null)
+            return null;
+
+        List<(int Year, int Month, decimal Amount)>? workAmounts = await _workRepository.GetDoctorWorkAmountsByMonthAsync(doctor.Id);
+
+        var paymentAmounts =
+            await _paymentRepository.GetDoctorPaymentAmountsByMonthAsync(doctor.Id);
+
+        // =========================================================
+        // MERGE ALL DISTINCT (YEAR, MONTH) KEYS
+        // =========================================================
+
+        var allKeys = workAmounts
+            .Select(x => (x.Year, x.Month))
+            .Union(paymentAmounts.Select(x => (x.Year, x.Month)))
+            .OrderBy(x => x.Year)
+            .ThenBy(x => x.Month)
+            .ToList();
+
+        var workMap = workAmounts
+            .ToDictionary(x => (x.Year, x.Month), x => x.Amount);
+
+        var paymentMap = paymentAmounts
+            .ToDictionary(x => (x.Year, x.Month), x => x.Amount);
+
+        var result = new List<DoctorPortalMonthlySummaryDto>();
+
+        decimal cumulativeBalance = 0;
+
+        foreach (var key in allKeys)
+        {
+            var workAmount = workMap.TryGetValue(key, out var w) ? w : 0;
+            var paymentAmount = paymentMap.TryGetValue(key, out var p) ? p : 0;
+
+            var monthlyBalance = workAmount - paymentAmount;
+
+            cumulativeBalance += monthlyBalance;
+
+            result.Add(new DoctorPortalMonthlySummaryDto
+            {
+                Year = key.Year,
+                Month = key.Month,
+                WorkAmount = workAmount,
+                PaymentAmount = paymentAmount,
+                MonthlyBalance = monthlyBalance,
+                CumulativeBalance = cumulativeBalance
+            });
+        }
+
+        // ən son ay üstdə görünsün deyə tərsinə çeviririk
+        result.Reverse();
+
+        return result;
     }
 }

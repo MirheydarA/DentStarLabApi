@@ -7,10 +7,12 @@ namespace DentStarLab.Application.Services;
 public class DoctorService
 {
     private readonly IDoctorRepository _repository;
+    private readonly IWorkRepository _workRepository;
 
-    public DoctorService(IDoctorRepository repository)
+    public DoctorService(IDoctorRepository repository, IWorkRepository workRepository)
     {
         _repository = repository;
+        _workRepository = workRepository;
     }
 
     public async Task<DoctorDto> CreateAsync(
@@ -103,5 +105,19 @@ public class DoctorService
     public async Task<DoctorBalanceDto?> GetBalanceByIdAsync(int doctorId)
     {
         return await _repository.GetBalanceByIdAsync(doctorId);
+    }
+
+    public async Task<List<DoctorDto>> GetFrequentAsync(int days = 90, int top = 5)
+    {
+        var doctorIds = await _workRepository.GetFrequentDoctorIdsAsync(days, top);
+
+        var allDoctors = await _repository.GetAllAsync();
+
+        var doctorMap = allDoctors.ToDictionary(d => d.Id);
+
+        return doctorIds
+            .Where(id => doctorMap.ContainsKey(id))
+            .Select(id => MapToDto(doctorMap[id]))
+            .ToList();
     }
 }

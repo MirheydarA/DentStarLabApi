@@ -131,4 +131,13 @@ public class DoctorsController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("frequent")]
+    public async Task<IActionResult> GetFrequent(
+    [FromQuery] int days = 90,
+    [FromQuery] int top = 5)
+    {
+        var result = await _service.GetFrequentAsync(days, top);
+        return Ok(result);
+    }
 }

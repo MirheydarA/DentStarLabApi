@@ -104,7 +104,7 @@ public class PaymentService
 
     public async Task<PagedResultDto<PaymentDto>> GetPagedAsync(PaymentQueryDto query)
     {
-        var (payments, totalCount) = await _paymentRepository.GetPagedAsync(query);
+        var (payments, totalCount, totalAmount) = await _paymentRepository.GetPagedAsync(query);
 
         var page = query.Page <= 0 ? 1 : query.Page;
         var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
@@ -114,7 +114,8 @@ public class PaymentService
             Items = payments.Select(MapToDto).ToList(),
             TotalCount = totalCount,
             Page = page,
-            PageSize = pageSize
+            PageSize = pageSize,
+            TotalAmount = totalAmount
         };
     }
 
