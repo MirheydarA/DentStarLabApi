@@ -75,13 +75,11 @@ public class DoctorsController : ControllerBase
     // =====================================================
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(
-        int id,
-        [FromBody] DoctorUpdateDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] DoctorUpdateDto dto)
     {
-        var result = await _service.UpdateAsync(
-            id,
-            dto);
+        throw new Exception("Bu test xətasıdır — Telegram-a bildiriş gəlməlidir.");
+
+        var result = await _service.UpdateAsync( id, dto);
 
         if (!result)
             return NotFound(new

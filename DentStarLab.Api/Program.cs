@@ -1,4 +1,5 @@
 using System.Text;
+using DentStarLab.Api.Logging;
 using DentStarLab.Application.Configuration;
 using DentStarLab.Application.Interfaces;
 using DentStarLab.Application.Services;
@@ -8,8 +9,63 @@ using DentStarLab.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+// =====================================================
+// Serilog Configuration (builder-dən ƏVVƏL)
+// =====================================================
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.Seq("http://localhost:5341")
+    .CreateLogger();
+
+
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
+
+var telegramBotToken = builder.Configuration["Telegram:BotToken"];
+var telegramChatId = builder.Configuration["Telegram:ChatId"];
+
+var loggerConfig = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.Seq("http://localhost:5341");
+
+if (!string.IsNullOrWhiteSpace(telegramBotToken) &&
+    !string.IsNullOrWhiteSpace(telegramChatId))
+{
+    loggerConfig = loggerConfig.WriteTo.Sink(
+        new TelegramLogSink(telegramBotToken, telegramChatId),
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error);
+}
+
+Log.Logger = loggerConfig.CreateLogger();
+
+builder.Host.UseSerilog();
+
+// =====================================================
+// Serilog-u host-a bağla
+// =====================================================
+
+builder.Host.UseSerilog(); // <-- YENİ
+
 
 // =====================================================
 // Infrastructure
@@ -168,6 +224,13 @@ var app = builder.Build();
 
 
 // =====================================================
+// Serilog Request Logging (hər HTTP sorğusunu avtomatik logla)
+// =====================================================
+
+app.UseSerilogRequestLogging(); // <-- YENİ
+
+
+// =====================================================
 // Development
 // =====================================================
 
@@ -232,4 +295,16 @@ using (var scope = app.Services.CreateScope())
 // Run
 // =====================================================
 
-app.Run();
+try
+{
+    Log.Information("DentStarLab API başladılır...");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Tətbiq başlama zamanı gözlənilməz şəkildə dayandı");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

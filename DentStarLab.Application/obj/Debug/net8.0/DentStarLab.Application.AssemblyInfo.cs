@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DentStarLab.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d086c2e0957ec4083176dcab0ad30b876bad920")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+931ca29948bd7e7de4601c5becddc246685fb8e5")]
 [assembly: System.Reflection.AssemblyProductAttribute("DentStarLab.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DentStarLab.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

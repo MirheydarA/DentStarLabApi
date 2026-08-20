@@ -53,7 +53,7 @@ public class DoctorService
 
     public async Task<bool> UpdateAsync(int id, DoctorUpdateDto dto)
     {
-        var doctor = await _repository.GetByIdAsync(id);
+        Doctor? doctor = await _repository.GetByIdAsync(id);
 
         if (doctor == null)
             return false;
@@ -62,7 +62,6 @@ public class DoctorService
         doctor.Surname = dto.Surname;
         doctor.Phone = dto.Phone;
         doctor.Email = dto.Email;
-        doctor.IsActive = dto.IsActive;
 
         await _repository.SaveChangesAsync();
 

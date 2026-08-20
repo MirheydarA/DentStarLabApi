@@ -43,6 +43,17 @@
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Microsoft.SqlServer.Server.dll
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Microsoft.Win32.SystemEvents.dll
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Mono.TextTemplating.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.AspNetCore.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Extensions.Hosting.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Extensions.Logging.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Formatting.Compact.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Settings.Configuration.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Sinks.Console.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Sinks.Debug.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Sinks.File.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Sinks.PeriodicBatching.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Serilog.Sinks.Seq.dll
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
