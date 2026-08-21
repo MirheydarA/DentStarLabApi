@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DentStarLab.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+931ca29948bd7e7de4601c5becddc246685fb8e5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d96a69bd31416648634103ec53322e4c7de1390")]
 [assembly: System.Reflection.AssemblyProductAttribute("DentStarLab.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DentStarLab.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -164,3 +164,4 @@
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/obj/Debug/net8.0/DentStarLab.Api.pdb
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/obj/Debug/net8.0/DentStarLab.Api.genruntimeconfig.cache
 /Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/obj/Debug/net8.0/ref/DentStarLab.Api.dll
+/Users/alizadamirheydar/Desktop/DentStarLabApi/DentStarLab.Api/bin/Debug/net8.0/Scalar.AspNetCore.dll
