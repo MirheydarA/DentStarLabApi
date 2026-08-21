@@ -283,13 +283,13 @@ app.MapControllers();
 // Database Seed
 // =====================================================
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider
-        .GetRequiredService<AppDbContext>();
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider
+//         .GetRequiredService<AppDbContext>();
 
-    await DataSeeder.SeedAsync(context);
-}
+//     await DataSeeder.SeedAsync(context);
+// }
 
 // =====================================================
 // Application Start
