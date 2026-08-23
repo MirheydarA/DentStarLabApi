@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DentStarLab.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d96a69bd31416648634103ec53322e4c7de1390")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe5ccafc2538e1439dff21e591ae19af0406efd9")]
 [assembly: System.Reflection.AssemblyProductAttribute("DentStarLab.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DentStarLab.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
