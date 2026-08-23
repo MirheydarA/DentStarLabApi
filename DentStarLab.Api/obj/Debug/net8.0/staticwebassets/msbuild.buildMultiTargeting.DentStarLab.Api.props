@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/DentStarLab.Api.props" />
-</Project>
