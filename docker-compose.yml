@@ -14,7 +14,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: DentStarLab.Api/Dockerfile
+      dockerfile: Dockerfile
     container_name: dentstarlab-api
     restart: unless-stopped
     depends_on:
