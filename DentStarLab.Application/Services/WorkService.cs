@@ -368,8 +368,7 @@ public class WorkService
 
             DoctorId = work.DoctorId,
 
-            DoctorName =
-                $"{work.Doctor.Name} {work.Doctor.Surname}",
+            DoctorName = $"{work.Doctor.Name} {work.Doctor.Surname}",
 
             PatientName = work.PatientName,
 
