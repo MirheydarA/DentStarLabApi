@@ -43,11 +43,6 @@ public static class SwaggerExtensions
 
     public static void ApplySwagger(this WebApplication app)
     {
-        if (!app.Environment.IsDevelopment())
-        {
-            return;
-        }
-
         app.UseSwagger();
 
         app.UseSwaggerUI();
