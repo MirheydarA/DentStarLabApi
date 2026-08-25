@@ -16,6 +16,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/apps/backend/DentStarLab
-            git pull origin main
+            cd ~/apps/backend/DentStarLabApi
+            git pull origin master
             docker compose up -d --build
