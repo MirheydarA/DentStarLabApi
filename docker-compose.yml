@@ -20,11 +20,11 @@ services:
     depends_on:
       - sqlserver
     ports:
-      - "8080:8080"
+      - "10000:10000"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:8080
-      FrontendUrl: https://sənindomain.com
+      ASPNETCORE_URLS: http://+:10000
+      FrontendUrl: dentstarlab-web.vercel.app
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=DentStarLabDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       Jwt__Issuer: "DentStarLab"
       Jwt__Audience: "DentStarLab"

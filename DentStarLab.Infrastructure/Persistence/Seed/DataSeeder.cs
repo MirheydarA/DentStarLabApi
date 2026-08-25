@@ -25,7 +25,7 @@ public static class DataSeeder
 
         admin.PasswordHash = passwordHasher.HashPassword(
             admin,
-            "Admin123!");
+            "admin1212");
 
         await context.Users.AddAsync(admin);
 
