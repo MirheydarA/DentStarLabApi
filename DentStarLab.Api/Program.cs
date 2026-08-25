@@ -29,14 +29,14 @@ builder.Services.InitAuthorization();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
+app.UseHttpsRedirection();
+app.ApplyCors();             
 app.ApplySwagger();
 app.ApplyScalar();
 app.ApplyAuthentication();
 app.ApplyAuthorization();
-app.MapControllers();
-app.UseSerilogRequestLogging();
-app.UseHttpsRedirection();
-app.ApplyCors();
+app.MapControllers();         
 await app.ApplyDatabaseSeedAsync();
 
 app.Run();
