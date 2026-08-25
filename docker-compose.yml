@@ -1,17 +1,13 @@
 services:
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: dentstarlab-sqlserver
     restart: unless-stopped
-
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Admin123!"
-
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
     ports:
       - "1433:1433"
-
     volumes:
       - sqlserver_data:/var/opt/mssql
 
@@ -19,29 +15,20 @@ services:
     build:
       context: .
       dockerfile: DentStarLab.Api/Dockerfile
-
     container_name: dentstarlab-api
-
     restart: unless-stopped
-
     depends_on:
       - sqlserver
-
     ports:
       - "8080:8080"
-
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
-
-      FrontendUrl: http://localhost:5173
-
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=DentStarLabDb;User Id=sa;Password=Admin123!;TrustServerCertificate=True;"
-      
+      FrontendUrl: https://sənindomain.com
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=DentStarLabDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       Jwt__Issuer: "DentStarLab"
       Jwt__Audience: "DentStarLab"
-      Jwt__Key: "DevelopmentOnly-ChangeThisToARealSecretKey-123456789"
-
+      Jwt__Key: "${JWT_KEY}"
       Telegram__BotToken: ""
       Telegram__ChatId: ""
 
