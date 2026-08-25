@@ -9,7 +9,7 @@ public static class OptionExtensions
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            // options.JsonSerializerOptions.PropertyNamingPolicy = null;
         });
     }
     
