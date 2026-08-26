@@ -79,15 +79,15 @@ public class DoctorsController : ControllerBase
     {
         throw new Exception("Bu test xətasıdır — Telegram-a bildiriş gəlməlidir.");
 
-        bool result = await _service.UpdateAsync( id, dto);
+        // bool result = await _service.UpdateAsync( id, dto);
 
-        if (!result)
-            return NotFound(new
-            {
-                message = "Doctor not found."
-            });
+        // if (!result)
+        //     return NotFound(new
+        //     {
+        //         message = "Doctor not found."
+        //     });
 
-        return NoContent();
+        // return NoContent();
     }
 
 
