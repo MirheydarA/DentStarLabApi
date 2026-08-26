@@ -74,20 +74,24 @@ public class DoctorsController : ControllerBase
     // Admin + Technician
     // =====================================================
 
+    // [HttpPut("{id:int}")]
+    // public async Task<IActionResult> Update(int id, [FromBody] DoctorUpdateDto dto)
+    // {
+    //     bool result = await _service.UpdateAsync( id, dto);
+
+    //     if (!result)
+    //         return NotFound(new
+    //         {
+    //             message = "Doctor not found."
+    //         });
+
+    //     return NoContent();
+    // }
+
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] DoctorUpdateDto dto)
+    public IActionResult Update(int id, [FromBody] DoctorUpdateDto dto)
     {
         throw new Exception("Bu test xətasıdır — Telegram-a bildiriş gəlməlidir.");
-
-        // bool result = await _service.UpdateAsync( id, dto);
-
-        // if (!result)
-        //     return NotFound(new
-        //     {
-        //         message = "Doctor not found."
-        //     });
-
-        // return NoContent();
     }
 
 
