@@ -27,5 +27,8 @@
     <ProjectReference Include="..\DentStarLab.Application\DentStarLab.Application.csproj" />
     <ProjectReference Include="..\DentStarLab.Infrastructure\DentStarLab.Infrastructure.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
 
 </Project>
